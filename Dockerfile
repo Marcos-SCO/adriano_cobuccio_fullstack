@@ -35,5 +35,7 @@ RUN apk add --no-cache \
 COPY --from=node /usr/local/bin /usr/local/bin
 COPY --from=node /usr/local/lib /usr/local/lib
 
+# EXPOSE 5173
+
 # Switch to the user
 USER $user
