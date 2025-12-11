@@ -13,6 +13,7 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'reversed_id',
         'sender_id',
         'receiver_id',
         'amount',

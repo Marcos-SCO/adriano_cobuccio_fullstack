@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
+
         <div class="col-span-1 bg-white p-4 rounded shadow">
-            
+
             <h2 class="text-lg font-semibold">Account</h2>
 
             <p class="mt-2">Hello, {{ $user->name }}</p>
@@ -37,7 +37,7 @@
                 <label class="block">Receiver
                     <select name="receiver_id" required class="w-full border p-2 rounded mt-1">
                         <option value="">Select a user</option>
-                        @foreach (App\Models\User::where('id', '!=', auth()->id())->get() as $u)
+                        @foreach ($userItems as $u)
                             <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }})</option>
                         @endforeach
                     </select>
@@ -57,7 +57,7 @@
             <div id="transaction-list" class="mt-6">
                 @include('wallet.partials.transaction-list', ['transactions' => $transactions])
             </div>
-            
+
         </div>
     </div>
 @endsection

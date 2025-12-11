@@ -23,7 +23,11 @@ class WalletService
         // Here's where Agiota receives payment and you don't turn into Saudade
         return DB::transaction(function () use ($user, $amount, $notes) {
 
-            $user->increment('balance', $amount);
+            // Round to 2 decimals
+            $amount = round($amount, 2);
+
+            $user->balance = round($user->balance + $amount, 2);
+            $user->save();
 
             $transaction = Transaction::create([
                 'receiver_id' => $user->id,
@@ -41,19 +45,21 @@ class WalletService
     {
 
         return DB::transaction(function () use ($sender, $receiver, $amount, $notes) {
+            $amount = round($amount, 2);
 
             // reload for consistency check
             $sender->refresh();
 
-            /* bcsub() (and all BC Math functions) 
-            requires its operands to be passed as strings to ensure perfect precision. */
-            if (bcsub((string)$sender->balance, (string)$amount, 2) < 0) {
+            if (round($sender->balance, 2) < $amount) {
                 throw new \Exception('Insufficient balance');
             }
 
             // This is how money from free software change hands
-            $sender->decrement('balance', $amount);
-            $receiver->increment('balance', $amount);
+            $sender->balance = round($sender->balance - $amount, 2);
+            $receiver->balance = round($receiver->balance + $amount, 2);
+
+            $sender->save();
+            $receiver->save();
 
             $transaction = Transaction::create([
                 'sender_id' => $sender->id,
@@ -75,27 +81,28 @@ class WalletService
     {
         return DB::transaction(function () use ($transaction, $reason) {
 
-            if ($transaction->status !== TransactionStatus::COMPLETED) {
-                throw new \Exception('Only completed transactions can be reversed.');
-            }
-
             $transaction->status = TransactionStatus::REVERSED;
             $transaction->save();
+
+            $amount = round($transaction->amount, 2);
+
+            $sender = $transaction->sender()->lockForUpdate()->first();
+            $receiver = $transaction->receiver()->lockForUpdate()->first();
 
             // reverse amounts
             if ($transaction->type === TransactionType::DEPOSIT) {
 
-                $receiver = $transaction->receiver()->lockForUpdate()->first();
-
                 // subtract the deposit from receiver
-                $receiver->decrement('balance', $transaction->amount);
+                $receiver->balance = round($receiver->balance - $amount, 2);
+                $receiver->save();
 
                 $reversal = Transaction::create([
-                    'sender_id' => $receiver->id,
-                    'receiver_id' => null,
+                    'reversed_id' => $transaction->id,
+                    'sender_id' => null,
+                    'receiver_id' => $receiver->id,
                     'amount' => $transaction->amount,
                     'type' => TransactionType::TRANSFER,
-                    'status' => TransactionStatus::COMPLETED,
+                    'status' => TransactionStatus::REVERSED,
                     'notes' => 'reversal: ' . ($reason ?? ' deposit reversal'),
                 ]);
 
@@ -105,19 +112,20 @@ class WalletService
 
             if ($transaction->type === TransactionType::TRANSFER) {
 
-                $sender = $transaction->sender()->lockForUpdate()->first();
-                $receiver = $transaction->receiver()->lockForUpdate()->first();
-
                 // move money back
-                $receiver->decrement('balance', $transaction->amount);
-                $sender->increment('balance', $transaction->amount);
+                $receiver->balance = round($receiver->balance - $amount, 2);
+                $sender->balance = round($sender->balance + $amount, 2);
+
+                $sender->save();
+                $receiver->save();
 
                 $reversal = Transaction::create([
-                    'sender_id' => $receiver->id,
-                    'receiver_id' => $sender->id,
+                    'reversed_id' => $transaction->id,
+                    'sender_id' => $sender->id,
+                    'receiver_id' => $receiver->id,
                     'amount' => $transaction->amount,
                     'type' => TransactionType::TRANSFER,
-                    'status' => TransactionStatus::COMPLETED,
+                    'status' => TransactionStatus::REVERSED,
                     'notes' => 'reversal: ' . ($reason ?? ' transfer reversal'),
                 ]);
 

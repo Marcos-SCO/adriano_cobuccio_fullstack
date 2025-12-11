@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TransactionStatus;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\WalletService;
@@ -18,16 +19,37 @@ class WalletController extends Controller
         $this->walletService = $walletService;
     }
 
+    protected function getUserTransactions(User $user, int $limit = 50)
+    {
+        return Transaction::where(function ($query) use ($user) {
+            $query->where('sender_id', $user->id)
+                ->orWhere('receiver_id', $user->id);
+        })
+            ->where(function ($query) {
+                // show completed that have not been reversed OR show reversed transactions
+                // $query->where('status', TransactionStatus::REVERSED)
+                //     ->orWhere(function ($q) {
+
+                //         $q->where('status', TransactionStatus::COMPLETED)
+                //             ->whereNull('reversed_id');
+                //         // only original not reversed
+                //     });
+
+                $query->whereNull('reversed_id');
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
     public function index(Request $request)
     {
         $user = $request->user();
-        $transactions = Transaction::where('sender_id', $user->id)
-            ->orWhere('receiver_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->limit(50)
-            ->get();
+        $transactions = $this->getUserTransactions($user);
 
-        return view('wallet.dashboard', compact('user', 'transactions'));
+        $userItems = User::where('id', '!=', $user->id)->get();
+
+        return view('wallet.dashboard', compact('user', 'userItems', 'transactions'));
     }
 
     public function deposit(Request $request)
@@ -39,10 +61,7 @@ class WalletController extends Controller
 
         if ($request->header('HX-Request')) {
 
-            $transactions = Transaction::where('receiver_id', $request->user()->id)
-                ->orderBy('created_at', 'desc')
-                ->limit(50)
-                ->get();
+            $transactions = $this->getUserTransactions($request->user());
 
             return view('wallet.partials.transaction-list', compact('transactions'));
         }
@@ -67,11 +86,7 @@ class WalletController extends Controller
         }
 
         if ($request->header('HX-Request')) {
-            $transactions = Transaction::where('sender_id', $request->user()->id)
-                ->orWhere('receiver_id', $request->user()->id)
-                ->orderBy('created_at', 'desc')
-                ->limit(50)
-                ->get();
+            $transactions = $this->getUserTransactions($request->user());
 
             return view('wallet.partials.transaction-list', compact('transactions'));
         }
@@ -89,7 +104,9 @@ class WalletController extends Controller
         }
 
         try {
-            $reversal = $this->walletService->reverseTransaction($transaction, $request->reason ?? null);
+
+            $this->walletService
+                ->reverseTransaction($transaction, $request->reason ?? null);
         } catch (\Exception $e) {
             return back()->withErrors(['reverse' => $e->getMessage()]);
         }
