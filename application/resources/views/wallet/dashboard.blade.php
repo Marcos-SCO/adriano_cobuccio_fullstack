@@ -16,22 +16,9 @@
 
                 @csrf
 
-                <label class="block">Deposit amount
-                    <input type="number" step="0.01" name="amount" a value="{{ old('amount') }}"
-                        class="w-full border p-2 rounded mt-1 @error('amount', 'deposit') border-red-500 @enderror" />
-                </label>
-                @error('amount', 'deposit')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                <x-form-input label="Deposit amount" name="amount" type="number" step="0.01" :value="old('amount')" errorBag="deposit" />
 
-                <!-- Notes -->
-                <label class="block mt-2">Notes
-                    <input type="text" name="notes" value="{{ old('notes') }}"
-                        class="w-full border p-2 rounded mt-1 @error('notes', 'deposit') border-red-500 @enderror" />
-                </label>
-                @error('notes', 'deposit')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                <x-form-input label="Notes" name="notes" type="text" :value="old('notes')" errorBag="deposit" />
 
                 <button class="bg-green-500 text-white px-4 py-2 rounded mt-3">Deposit</button>
             </form>
@@ -57,35 +44,27 @@
             hx-target="body" hx-swap="innerHTML" --}}>
                 @csrf
 
-                <label class="block">Receiver
-                    <select name="receiver_id" required class="w-full border p-2 rounded mt-1">
-                        <option value="">Select a user</option>
-                        @foreach ($listItems as $u)
-                            <option value="{{ $u->id }}" {{ old('receiver_id') == $u->id ? 'selected' : '' }}>
-                                {{ $u->name }} ({{ $u->email }})
-                            </option>
-                        @endforeach
-                    </select>
-                </label>
-                @error('receiver_id')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                <div>
+                    <label class="block">Receiver
+                        <select name="receiver_id" required class="w-full border p-2 rounded mt-1">
+                            <option value="">Select a user</option>
+                            @foreach ($listItems as $u)
+                                <option value="{{ $u->id }}" {{ old('receiver_id') == $u->id ? 'selected' : '' }}>
+                                    {{ $u->name }} ({{ $u->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </label>
+                    @error('receiver_id')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <label class="block mt-2">Amount
-                    <input type="number" step="0.01" name="amount" required value="{{ old('amount') }}"
-                        class="w-full border p-2 rounded mt-1 @error('amount', 'transfer') border-red-500 @enderror" />
-                </label>
-                @error('amount', 'transfer')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                <div>
+                    <x-form-input label="Amount" name="amount" type="number" step="0.01" required :value="old('amount')" errorBag="transfer" />
 
-                <label class="block mt-2">Notes
-                    <input type="text" name="notes" value="{{ old('notes') }}"
-                        class="w-full border p-2 rounded mt-1 @error('notes', 'transfer') border-red-500 @enderror" />
-                </label>
-                @error('notes', 'transfer')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                    <x-form-input label="Notes" name="notes" type="text" :value="old('notes')" errorBag="transfer" />
+                </div>
 
                 <button class="bg-blue-500 text-white px-4 py-2 rounded mt-3">Transfer</button>
             </form>
