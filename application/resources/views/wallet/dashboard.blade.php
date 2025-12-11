@@ -11,16 +11,27 @@
             <p class="mt-2">Balance: <strong>${{ number_format($user->balance, 2) }}</strong></p>
 
 
-            <form action="{{ route('wallet.deposit') }}" method="POST" class="mt-4" hx-post="{{ route('wallet.deposit') }}"
-                hx-target="#transaction-list" hx-swap="innerHTML">
+            <form action="{{ route('wallet.deposit') }}" method="POST" class="mt-4" {{-- hx-post="{{ route('wallet.deposit') }}"
+                hx-target="#transaction-list" hx-swap="innerHTML" --}}>
 
                 @csrf
+
                 <label class="block">Deposit amount
-                    <input type="number" step="0.01" name="amount" required class="w-full border p-2 rounded mt-1" />
+                    <input type="number" step="0.01" name="amount" a value="{{ old('amount') }}"
+                        class="w-full border p-2 rounded mt-1 @error('amount', 'deposit') border-red-500 @enderror" />
                 </label>
+                @error('amount', 'deposit')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+
+                <!-- Notes -->
                 <label class="block mt-2">Notes
-                    <input type="text" name="notes" class="w-full border p-2 rounded mt-1" />
+                    <input type="text" name="notes" value="{{ old('notes') }}"
+                        class="w-full border p-2 rounded mt-1 @error('notes', 'deposit') border-red-500 @enderror" />
                 </label>
+                @error('notes', 'deposit')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
 
                 <button class="bg-green-500 text-white px-4 py-2 rounded mt-3">Deposit</button>
             </form>
@@ -30,12 +41,12 @@
         <div class="col-span-2 bg-white p-4 rounded shadow">
             <h2 class="text-lg font-semibold">Transfer</h2>
 
-            @if ($errors->any())
+            @if ($errors->transfer->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4 mb-3">
                     <strong class="font-bold">Oops!</strong>
                     <span class="block">Please fix the following errors:</span>
                     <ul class="mt-2 list-disc list-inside">
-                        @foreach ($errors->all() as $error)
+                        @foreach ($errors->transfer->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -62,17 +73,17 @@
 
                 <label class="block mt-2">Amount
                     <input type="number" step="0.01" name="amount" required value="{{ old('amount') }}"
-                        class="w-full border p-2 rounded mt-1 @error('amount') border-red-500 @enderror" />
+                        class="w-full border p-2 rounded mt-1 @error('amount', 'transfer') border-red-500 @enderror" />
                 </label>
-                @error('amount')
+                @error('amount', 'transfer')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                
+
                 <label class="block mt-2">Notes
                     <input type="text" name="notes" value="{{ old('notes') }}"
-                        class="w-full border p-2 rounded mt-1 @error('notes') border-red-500 @enderror" />
+                        class="w-full border p-2 rounded mt-1 @error('notes', 'transfer') border-red-500 @enderror" />
                 </label>
-                @error('notes')
+                @error('notes', 'transfer')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
 
