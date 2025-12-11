@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\TransactionStatus;
+use App\Enums\TransactionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Fluent\Concerns\Has;
@@ -18,6 +20,14 @@ class Transaction extends Model
         'status',
         'notes',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'type' => TransactionType::class,
+            'status' => TransactionStatus::class,
+        ];
+    }
 
     public function sender()
     {
