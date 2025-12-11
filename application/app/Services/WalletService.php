@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Services;
+
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use App\Models\Transaction;

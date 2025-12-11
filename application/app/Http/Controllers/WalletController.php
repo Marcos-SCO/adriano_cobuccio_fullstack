@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
-use WalletService;
+use Illuminate\Routing\Controller;
 
 class WalletController extends Controller
 {
-    public function __construct(protected WalletService $walletService)
+    protected WalletService $walletService;
+
+    public function __construct(WalletService $walletService)
     {
         $this->middleware('auth');
         $this->walletService = $walletService;
@@ -26,7 +29,6 @@ class WalletController extends Controller
 
         return view('wallet.dashboard', compact('user', 'transactions'));
     }
-
 
     public function deposit(Request $request)
     {
