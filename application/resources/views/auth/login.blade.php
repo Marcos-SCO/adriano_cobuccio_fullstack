@@ -1,14 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <form method="POST" action="{{ route('login') }}" class="max-w-md mx-auto mt-20 space-y-4">
+    <form method="POST" action="{{ route('login') }}" class="max-w-md mx-auto mt-12 space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200 border-l-4 border-indigo-300 hover:shadow transition">
         @csrf
         <h1 class="text-2xl font-bold">Login</h1>
+        <p class="text-sm text-gray-500">Access your account to manage your wallet and transactions.</p>
 
         <div>
             <label for="email" class="block text-gray-700">Email</label>
             <input type="email" name="email" id="email" value="{{ old('email') }}"
-                class="mt-1 w-full rounded border-gray-300" required autofocus>
+                class="mt-1 w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200" required autofocus>
             @error('email')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
@@ -16,7 +17,7 @@
 
         <div>
             <label for="password" class="block text-gray-700">Password</label>
-            <input type="password" name="password" id="password" class="mt-1 w-full rounded border-gray-300" required>
+            <input type="password" name="password" id="password" class="mt-1 w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200" required>
             @error('password')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
@@ -29,10 +30,10 @@
             </label>
         </div>
 
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Login</button>
+        <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Login</button>
 
-        <p class="text-sm text-gray-600 mt-4">
-            Don't have an account? <a href="{{ route('register') }}" class="text-blue-600">Register</a>
+        <p class="text-sm text-gray-600 mt-4 text-center">
+            Don't have an account? <a href="{{ route('register') }}" class="text-blue-600 font-medium">Register</a>
         </p>
     </form>
 @endsection
