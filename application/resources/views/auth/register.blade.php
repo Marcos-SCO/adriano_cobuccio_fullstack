@@ -6,13 +6,13 @@
         <h1 class="text-2xl font-bold">Register</h1>
         <p class="text-sm text-gray-500">Create a new account to start sending and receiving funds.</p>
 
-        <x-form-input label="Name" name="name" :value="old('name')" required />
+        <x-form-input label="Name" name="name" focusLabel="register_name" :value="old('name')" required />
 
-        <x-form-input label="Email" name="email" type="email" :value="old('email')" required />
+        <x-form-input label="Email" name="email" focusLabel="register_email" type="email" :value="old('email')" required />
 
-        <x-form-input label="Password" name="password" type="password" required />
+        <x-form-input label="Password" name="password" focusLabel="register_password" type="password" required />
 
-        <x-form-input label="Confirm Password" name="password_confirmation" type="password" required />
+        <x-form-input label="Confirm Password" name="password_confirmation" focusLabel="register_password_confirmation" type="password" required />
 
         <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Register</button>
 

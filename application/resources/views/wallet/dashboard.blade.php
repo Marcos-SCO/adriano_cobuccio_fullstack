@@ -16,9 +16,11 @@
 
                 @csrf
 
-                <x-form-input label="Deposit amount" name="amount" type="number" step="0.01" :value="old('amount')" errorBag="deposit" />
+                <x-form-input label="Deposit amount" name="amount" focusLabel="deposit_amount" type="number" step="0.01"
+                    :value="old('amount')" errorBag="deposit" />
 
-                <x-form-input label="Notes" name="notes" type="text" :value="old('notes')" errorBag="deposit" />
+                <x-form-input label="Notes" name="notes" focusLabel="deposit_notes" type="text" :value="old('notes')"
+                    errorBag="deposit" />
 
                 <button class="bg-green-500 text-white px-4 py-2 rounded mt-3">Deposit</button>
             </form>
@@ -44,15 +46,14 @@
             hx-target="body" hx-swap="innerHTML" --}}>
                 @csrf
 
-                <div>
-                    <x-form-select label="Receiver" name="receiver_id" :options="$listItems" :value="old('receiver_id')" placeholder="Select a user" required />
-                </div>
+                <x-form-select label="Receiver" name="receiver_id" focusLabel="transfer_receiver_id" :options="$listItems"
+                    :value="old('receiver_id')" placeholder="Select a user" required />
 
-                <div>
-                    <x-form-input label="Amount" name="amount" type="number" step="0.01" required :value="old('amount')" errorBag="transfer" />
+                <x-form-input label="Amount" name="amount" focusLabel="transfer_amount" type="number" step="0.01"
+                    required :value="old('amount')" errorBag="transfer" />
 
-                    <x-form-input label="Notes" name="notes" type="text" :value="old('notes')" errorBag="transfer" />
-                </div>
+                <x-form-input label="Notes" name="notes" focusLabel="transfer_notes" type="text" :value="old('notes')"
+                    errorBag="transfer" />
 
                 <button class="bg-blue-500 text-white px-4 py-2 rounded mt-3">Transfer</button>
             </form>
