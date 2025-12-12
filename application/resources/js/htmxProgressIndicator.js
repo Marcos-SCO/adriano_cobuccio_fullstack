@@ -53,7 +53,7 @@ export function clearFormLoading(form) {
 // ------------------------------
 
 document.body.addEventListener('htmx:beforeRequest', (e) => {
-    console.log("🔥 HTMX request started", e);
+    // console.log("🔥 HTMX request started", e);
     NProgress.start();
 
     const form = getFormFromEvent(e);
@@ -67,7 +67,7 @@ document.body.addEventListener('htmx:beforeRequest', (e) => {
 });
 
 document.body.addEventListener('htmx:afterSwap', (e) => {
-    console.log("✅ HTMX swap finished", e);
+    // console.log("✅ HTMX swap finished", e);
     NProgress.done();
 
     const form = getFormFromEvent(e);

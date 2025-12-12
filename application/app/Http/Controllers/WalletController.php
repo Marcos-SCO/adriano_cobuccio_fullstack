@@ -67,7 +67,7 @@ class WalletController extends Controller
                 ->withInput();
         }
 
-        return redirect()->back()->with('success', 'Deposit completed successfully!');
+        return redirect()->back()->with('success', __('messages.deposit_success'));
     }
 
     public function transfer(Request $request)
@@ -89,7 +89,7 @@ class WalletController extends Controller
                 ->withInput();
         }
 
-        return redirect()->back()->with('success', 'Deposit completed successfully!');
+        return redirect()->back()->with('success', __('messages.transfer_success'));
     }
 
     // reverse transaction endpoint (admin or owner)
@@ -109,6 +109,6 @@ class WalletController extends Controller
             return back()->withErrors(['reverse' => $e->getMessage()]);
         }
 
-        return back()->with('success', 'Transaction reversed');
+        return back()->with('success', __('messages.transaction_reversed'));
     }
 }

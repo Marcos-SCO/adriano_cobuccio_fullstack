@@ -15,6 +15,8 @@
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <x-navbar />
 
+    <x-flash />
+
     <main class="container mx-auto p-6" data-js="main-content">
         <div hx-ext="progress-indicator"></div>
 
