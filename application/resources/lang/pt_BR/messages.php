@@ -46,6 +46,10 @@ return [
 
     'loading' => 'Carregando...',
 
+    'deposit_success' => 'Depósito realizado com sucesso!',
+    'transfer_success' => 'Transferência realizada com sucesso!',
+    'transaction_reversed' => 'Transação revertida com sucesso!',
+
     'transaction_type' => [
         'deposit' => 'Depósito',
         'transfer' => 'Transferência',

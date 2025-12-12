@@ -23,7 +23,9 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('wallet');
+            // return redirect()->intended('wallet');
+
+            return redirect()->intended('wallet')->with('success', __('auth.login_success'));
         }
 
         return back()->withErrors([
@@ -52,7 +54,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->intended('wallet');
+        return redirect()->intended('wallet')->with('success', __('auth.register_success'));
     }
 
     public function logout(Request $request)
@@ -61,6 +63,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('login')->with('success', __('auth.logout_success'));
     }
 }

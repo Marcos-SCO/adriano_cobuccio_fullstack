@@ -17,4 +17,8 @@ return [
     'password' => 'A senha informada está incorreta.',
     'throttle' => 'Muitas tentativas de login. Tente novamente em :seconds segundos.',
     'invalid_credentials' => 'Credenciais inválidas.',
+
+    'login_success' => 'Login realizado com sucesso!',
+    'register_success' => 'Cadastro realizado com sucesso!',
+    'logout_success' => 'Logout realizado com sucesso!',
 ];
