@@ -12,13 +12,14 @@ export default defineConfig({
     },
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'],
+            input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
         tailwindcss(),
     ],
     server: {
-        host: true, // Allow access from the network
+        host: '0.0.0.0',
+        // host: true, // Allow access from the network
         port: 5173, // Use the port exposed in Docker app service
         strictPort: true, // Fail if the port is already in use
         hmr: {
